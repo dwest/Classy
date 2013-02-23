@@ -2,18 +2,23 @@
 
 describe("Type", function() {
 
-    it("should create a constructor function", function() {
-        expect(typeof Type()).toEqual("function");
+    it( "should create a constructor function" , function() {
+        expect(typeof Classy.Type()).toEqual("function");
     });
 
-    it("should create new instances with ``new''", function() {
-        var MyClass = Type({});
+    it( "should create new instances with ``new''" , function() {
+        var MyClass = Classy.Type({});
         
         expect(typeof new MyClass()).toEqual("object");
-        expect(new MyClass() instanceof MyClass).toBe(true);
     });
 
-    it("should call the user defined constructor when an instance is created", function() {
+    it( "should allow type checking with ``instanceof''" , function() {
+        var MyClass = Classy.Type({});
+
+        expect(new MyClass instanceof MyClass).toBe(true);
+    });
+
+    it( "should call the user defined constructor when an instance is created" , function() {
         var typedef = {
             constructor: function() {
             },
@@ -21,13 +26,13 @@ describe("Type", function() {
 
         spyOn(typedef, "constructor");
 
-        var MyType = Type(typedef);
+        var MyType = Classy.Type(typedef);
         var instance = new MyType;
 
         expect(typedef.constructor).toHaveBeenCalled();
     });
 
-    describe("User Constructors", function() {
+    describe( "User Constructors" , function() {
         var MyType     = null,
             instance = null,
             typedef = {
@@ -42,21 +47,21 @@ describe("Type", function() {
         
         beforeEach(function() {
             spyOn(typedef, 'constructor').andCallThrough();
-            MyType = Type(typedef);
+            MyType = Classy.Type(typedef);
             instance = new MyType(1, 2);
         });
     
-        it("should have access to all arguments of the original constructor", function() {
+        it( "should have access to all arguments of the original constructor" , function() {
             expect(typedef.constructor).toHaveBeenCalledWith(1, 2);
         });
 
-        it("should be able to mutate the instance", function() {
+        it( "should be able to mutate the instance" , function() {
             expect(instance.a).toBe(1);
             expect(instance.b).toBe(2);
         });
     });
 
-    describe("Static members", function() {
+    describe( "Static Members" , function() {
         var MyType  = null,
             a       = null,
             b       = null,
@@ -76,12 +81,12 @@ describe("Type", function() {
         ;
 
         beforeEach(function() {
-            MyType = Type(typedef);
+            MyType = Classy.Type(typedef);
             a      = new MyType();
             b      = new MyType();
         });
 
-        it("should be shared across instances", function() {
+        it( "should be shared across instances" , function() {
             a.mutateStatic(42);
             b.mutateStatic(14);
 
@@ -90,7 +95,7 @@ describe("Type", function() {
         });
     });
 
-    describe("Static Methods", function() {
+    describe( "Static Methods" , function() {
         var MyType = null,
             typedef = {
                 Static: {
@@ -102,10 +107,10 @@ describe("Type", function() {
         ;
         
         beforeEach(function() {
-            MyType = Type(typedef);
+            MyType = Classy.Type(typedef);
         });
 
-        it("should not allow direct modification", function() {
+        it( "should be immutable" , function() {
 
             var reassign = function() {
                 MyType.Static.staticMethod = function() {
@@ -116,4 +121,38 @@ describe("Type", function() {
             expect(reassign).toThrow();
         });
     });
+
+    describe( "Inheritance", /* in a */function(){/*...*/
+
+        var superType,
+            subType,
+            instance;
+            
+        var superClass = {
+
+            member:"variable",
+
+            constructor:function() {
+                this.member = 'initial';
+            },
+        },
+
+        subClass={
+        
+            constructor: function() {
+                this.member = 'different';
+            },
+        };
+        
+        beforeEach( function(){
+            superType = Classy.Type(superClass);
+            subType   = Classy.Derive(superType, subClass);
+            instance  = new subType;
+        });
+        
+        it( "should allow base types to derive from one parent type" , function() {
+            expect(instance instanceof superType).toEqual(true);
+            expect(instance instanceof subType).toEqual(true);
+        });
+        });
 });

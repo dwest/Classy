@@ -2,6 +2,7 @@
 
 // Change the global object to match your environment
 (function(global) {
+    var ns = {};
 
     /**
      * Properties which have special meaning.
@@ -41,7 +42,8 @@
     function definitionToProperties(definition, reserved) {
         var props    = {};
         reserved = coalesce(reserved, RESERVED);
-        
+
+        // Create a property list from the definition
         Object.keys(definition)
         // Special properties will be set up later
         .filter(function(key) {
@@ -69,12 +71,15 @@
 
             props[key] = prop;
         })
+
+        // end property list creation
         ;
 
         return props;
     }
 
-    global.Type = function(definition) {
+    ns.Type = function(definition) {
+        // Type should work with no arguments, even if it is dubiously useful..
         definition = coalesce(definition, {});
 
         var Static  = Object.defineProperties({}, definitionToProperties(coalesce(definition["Static"], {}), [])), // Shared static space for all objects of this type
@@ -92,8 +97,9 @@
         return constructor;
     };
 
-    global.Extend = function(type, definition) {
-        
+    ns.Derive = function(type, definition) {
+        return ns.Type(definition);
     };
-    
+
+    global.Classy = ns;
 }(window));
