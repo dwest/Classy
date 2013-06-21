@@ -151,7 +151,6 @@ describe("Types", /* in a */function() {
         });
 
         it( "should allow base types to derive from one parent type" , function() {
-            console.log(instance);
             expect(instance instanceof subType).toEqual(true);
             expect(instance instanceof superType).toEqual(true);
         });

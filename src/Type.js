@@ -101,7 +101,7 @@
         var subtype = ns.Type(definition);
         subtype.prototype = new type;
         subtype.prototype.constructor = definition;
-        console.log( subtype instanceof type );
+
         return subtype;
     };
 
