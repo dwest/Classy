@@ -1,19 +1,19 @@
 "use strict";
 
-describe("Type", function() {
+describe("Types", /* in a */function() {
 
     it( "should create a constructor function" , function() {
         expect(typeof Classy.Type()).toEqual("function");
     });
 
     it( "should create new instances with ``new''" , function() {
-        var MyClass = Classy.Type({});
-        
+        var MyClass = Classy.Type( {} );
+
         expect(typeof new MyClass()).toEqual("object");
     });
 
     it( "should allow type checking with ``instanceof''" , function() {
-        var MyClass = Classy.Type({});
+        var MyClass = Classy.Type( {} );
 
         expect(new MyClass instanceof MyClass).toBe(true);
     });
@@ -26,31 +26,31 @@ describe("Type", function() {
 
         spyOn(typedef, "constructor");
 
-        var MyType = Classy.Type(typedef);
+        var MyType   = Classy.Type(typedef);
         var instance = new MyType;
 
         expect(typedef.constructor).toHaveBeenCalled();
     });
 
-    describe( "User Constructors" , function() {
+    describe( "User Constructors", /* in a */function() {
         var MyType     = null,
-            instance = null,
-            typedef = {
+            instance   = null,
+            typedef    = {
                 a: undefined,
                 b: undefined,
-                
+
                 constructor: function(a, b) {
                     this.a = a;
                     this.b = b;
                 },
             };
-        
+
         beforeEach(function() {
             spyOn(typedef, 'constructor').andCallThrough();
             MyType = Classy.Type(typedef);
             instance = new MyType(1, 2);
         });
-    
+
         it( "should have access to all arguments of the original constructor" , function() {
             expect(typedef.constructor).toHaveBeenCalledWith(1, 2);
         });
@@ -61,7 +61,7 @@ describe("Type", function() {
         });
     });
 
-    describe( "Static Members" , function() {
+    describe( "Static Members", /* in a */function() {
         var MyType  = null,
             a       = null,
             b       = null,
@@ -69,7 +69,7 @@ describe("Type", function() {
                 Static: {
                     c: undefined,
                 },
-                
+
                 mutateStatic: function(v) {
                     MyType.Static.c = v;
                 },
@@ -86,7 +86,7 @@ describe("Type", function() {
             b      = new MyType();
         });
 
-        it( "should be shared across instances" , function() {
+        it( "should be shared across instances", function() {
             a.mutateStatic(42);
             b.mutateStatic(14);
 
@@ -95,7 +95,7 @@ describe("Type", function() {
         });
     });
 
-    describe( "Static Methods" , function() {
+    describe( "Static Methods", /* in a */function() {
         var MyType = null,
             typedef = {
                 Static: {
@@ -105,7 +105,7 @@ describe("Type", function() {
                 },
             }
         ;
-        
+
         beforeEach(function() {
             MyType = Classy.Type(typedef);
         });
@@ -127,7 +127,7 @@ describe("Type", function() {
         var superType,
             subType,
             instance;
-            
+
         var superClass = {
 
             member:"variable",
@@ -138,21 +138,22 @@ describe("Type", function() {
         },
 
         subClass={
-        
+
             constructor: function() {
                 this.member = 'different';
             },
         };
-        
+
         beforeEach( function(){
             superType = Classy.Type(superClass);
             subType   = Classy.Derive(superType, subClass);
             instance  = new subType;
         });
-        
+
         it( "should allow base types to derive from one parent type" , function() {
-            expect(instance instanceof superType).toEqual(true);
+            console.log(instance);
             expect(instance instanceof subType).toEqual(true);
+            expect(instance instanceof superType).toEqual(true);
         });
-        });
+    });
 });

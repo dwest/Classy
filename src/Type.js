@@ -5,10 +5,10 @@
     var ns = {};
 
     /**
-     * Properties which have special meaning.
+     * Properties which have special meaning within the class.
      */
     var RESERVED = ["Static", "constructor",];
-    
+
     /**
      * Return the first non-null defined argument passed to this
      * function, or undefined if no arguments meet these criteria.
@@ -21,7 +21,7 @@
             if(arguments[i] !== undefined && arguments[i] !== null)
                 return arguments[i];
         }
-        
+
         return undefined;
     }
 
@@ -40,7 +40,7 @@
      * @return {Object} properties list
      */
     function definitionToProperties(definition, reserved) {
-        var props    = {};
+        var props = {};
         reserved = coalesce(reserved, RESERVED);
 
         // Create a property list from the definition
@@ -60,7 +60,7 @@
                 writable: true,
                 value: definition[key]
             };
-            
+
             // Callable properties will be invoked with the type as ``this''
             if(isCallable(definition[key])) {
                 prop = {
@@ -79,7 +79,7 @@
     }
 
     ns.Type = function(definition) {
-        // Type should work with no arguments, even if it is dubiously useful..
+        // Type should work with no arguments, even if it is dubiously useful to have an empty class...
         definition = coalesce(definition, {});
 
         var Static  = Object.defineProperties({}, definitionToProperties(coalesce(definition["Static"], {}), [])), // Shared static space for all objects of this type
@@ -98,7 +98,11 @@
     };
 
     ns.Derive = function(type, definition) {
-        return ns.Type(definition);
+        var subtype = ns.Type(definition);
+        subtype.prototype = new type;
+        subtype.prototype.constructor = definition;
+        console.log( subtype instanceof type );
+        return subtype;
     };
 
     global.Classy = ns;
