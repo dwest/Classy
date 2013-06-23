@@ -1,13 +1,13 @@
 "use strict";
 
 // Change the global object to match your environment
-(function(global) {
+define(function() {
     var ns = {};
 
     /**
      * Properties which have special meaning within the class.
      */
-    var RESERVED = ["Static", "constructor",];
+    var RESERVED = ["Static", "constructor"];
 
     /**
      * Return the first non-null defined argument passed to this
@@ -78,7 +78,7 @@
         return props;
     }
 
-    ns.Type = function(definition) {
+    ns.type = function(definition) {
         // Type should work with no arguments, even if it is dubiously useful to have an empty class...
         definition = coalesce(definition, {});
 
@@ -97,13 +97,13 @@
         return constructor;
     };
 
-    ns.Derive = function(type, definition) {
-        var subtype = ns.Type(definition);
+    ns.derive = function(type, definition) {
+        var subtype = ns.type(definition);
         subtype.prototype = new type;
         subtype.prototype.constructor = definition;
 
         return subtype;
     };
 
-    global.Classy = ns;
-}(window));
+    return ns;
+});
